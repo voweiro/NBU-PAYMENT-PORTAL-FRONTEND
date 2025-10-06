@@ -3,6 +3,34 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* University Official Colors */
+  --university-red: #E74C3C;
+  --university-blue: #3498DB;
+  --university-white: #ffffff;
+  
+  /* Extended color palette based on university colors */
+  --red-50: #fef2f2;
+  --red-100: #fee2e2;
+  --red-200: #fecaca;
+  --red-300: #fca5a5;
+  --red-400: #f87171;
+  --red-500: #E74C3C;
+  --red-600: #dc2626;
+  --red-700: #b91c1c;
+  --red-800: #991b1b;
+  --red-900: #7f1d1d;
+  
+  --blue-50: #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-200: #bfdbfe;
+  --blue-300: #93c5fd;
+  --blue-400: #60a5fa;
+  --blue-500: #3498DB;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-800: #1e40af;
+  --blue-900: #1e3a8a;
 }
 
 @theme inline {
@@ -10,12 +38,21 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* University color utilities */
+  --color-university-red: var(--university-red);
+  --color-university-blue: var(--university-blue);
+  --color-university-white: var(--university-white);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    
+    /* Adjust university colors for dark mode */
+    --university-red: #f56565;
+    --university-blue: #4299e1;
   }
 }
 
@@ -23,4 +60,92 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom utility classes for university branding */
+.text-university-red {
+  color: var(--university-red);
+}
+
+.text-university-blue {
+  color: var(--university-blue);
+}
+
+.bg-university-red {
+  background-color: var(--university-red);
+}
+
+.bg-university-blue {
+  background-color: var(--university-blue);
+}
+
+.border-university-red {
+  border-color: var(--university-red);
+}
+
+.border-university-blue {
+  border-color: var(--university-blue);
+}
+
+/* Gradient utilities */
+.bg-gradient-university {
+  background: linear-gradient(135deg, var(--university-red), var(--university-blue));
+}
+
+.bg-gradient-university-reverse {
+  background: linear-gradient(135deg, var(--university-blue), var(--university-red));
+}
+
+/* Focus states with university colors */
+.focus-university-red:focus {
+  outline: 2px solid var(--university-red);
+  outline-offset: 2px;
+}
+
+.focus-university-blue:focus {
+  outline: 2px solid var(--university-blue);
+  outline-offset: 2px;
+}
+
+/* Hover effects */
+.hover-university-red:hover {
+  background-color: var(--university-red);
+  color: white;
+}
+
+.hover-university-blue:hover {
+  background-color: var(--university-blue);
+  color: white;
+}
+
+/* Animation for university branding */
+@keyframes university-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-university-pulse {
+  animation: university-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom scrollbar with university colors */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--university-red), var(--university-blue));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--university-blue), var(--university-red));
 }
