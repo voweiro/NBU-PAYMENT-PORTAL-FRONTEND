@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import Header from "@/components/Header";
@@ -18,13 +18,17 @@ function QRAutoLookup({
   setReference: (val: string) => void;
 }) {
   const params = useSearchParams();
+  const hasRun = useRef(false);
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
     const qrRef = params.get("ref");
     if (qrRef) {
       setReference(qrRef);
       performLookup(qrRef, "qr");
     }
-  }, [params, performLookup, setReference]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
   return null;
 }
 
@@ -41,7 +45,7 @@ export default function PaymentLookupPage() {
     student_name?: string | null;
   } | null>(null);
 
-  const performLookup = async (ref: string, source: "manual" | "qr" = "manual") => {
+  const performLookup = useCallback(async (ref: string, source: "manual" | "qr" = "manual") => {
     const cleanRef = ref.trim();
     if (!cleanRef) {
       toast.warn("Enter your payment reference");
@@ -74,7 +78,7 @@ export default function PaymentLookupPage() {
       toast.error(message);
       setLoading("idle");
     }
-  };
+  }, []);
 
   const onCheckStatus = async (e: React.FormEvent) => {
     e.preventDefault();
