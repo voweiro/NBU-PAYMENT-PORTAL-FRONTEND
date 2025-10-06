@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import Header from "@/components/Header";
 
@@ -8,6 +9,24 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 const UNIVERSITY_NAME = process.env.NEXT_PUBLIC_UNIVERSITY_NAME ?? "Your University";
 
 type PaymentStatus = "successful" | "pending" | "failed";
+
+function QRAutoLookup({
+  performLookup,
+  setReference,
+}: {
+  performLookup: (ref: string, source?: "manual" | "qr") => Promise<void> | void;
+  setReference: (val: string) => void;
+}) {
+  const params = useSearchParams();
+  useEffect(() => {
+    const qrRef = params.get("ref");
+    if (qrRef) {
+      setReference(qrRef);
+      performLookup(qrRef, "qr");
+    }
+  }, [params, performLookup, setReference]);
+  return null;
+}
 
 export default function PaymentLookupPage() {
   const [reference, setReference] = useState("");
@@ -22,17 +41,16 @@ export default function PaymentLookupPage() {
     student_name?: string | null;
   } | null>(null);
 
-  const onCheckStatus = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const ref = reference.trim();
-    if (!ref) {
+  const performLookup = async (ref: string, source: "manual" | "qr" = "manual") => {
+    const cleanRef = ref.trim();
+    if (!cleanRef) {
       toast.warn("Enter your payment reference");
       return;
     }
     setLoading("checking");
     setResult(null);
     try {
-      const res = await fetch(`${API_URL}/payments/by-ref/${encodeURIComponent(ref)}`);
+      const res = await fetch(`${API_URL}/payments/by-ref/${encodeURIComponent(cleanRef)}`);
       const json = await res.json();
       if (!res.ok || !json.success) {
         const msg = typeof json.error === "string" ? json.error : "Lookup failed";
@@ -42,12 +60,25 @@ export default function PaymentLookupPage() {
       }
       setResult(json.data);
       setLoading("idle");
-      toast.success("Payment found");
+      if (source === "qr") {
+        if (json.data?.status === "successful") {
+          toast.success("This receipt is authentic ✅");
+        } else {
+          toast.warn("Payment not successful yet. Receipt may be unavailable.");
+        }
+      } else {
+        toast.success("Payment found");
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Network error";
       toast.error(message);
       setLoading("idle");
     }
+  };
+
+  const onCheckStatus = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await performLookup(reference, "manual");
   };
 
   const onGenerateReceipt = async () => {
@@ -97,6 +128,10 @@ export default function PaymentLookupPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900">
       {/* Header */}
       <Header currentPage="lookup" showThemeToggle={true} />
+      {/* Auto-lookup when opened from QR: wrapped in Suspense per Next.js guidance */}
+      <Suspense>
+        <QRAutoLookup performLookup={performLookup} setReference={setReference} />
+      </Suspense>
       
       <main className="max-w-xl mx-auto px-6 py-8">
         <div className="space-y-6">
