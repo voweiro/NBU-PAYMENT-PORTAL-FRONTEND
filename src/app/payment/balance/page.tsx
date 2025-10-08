@@ -21,6 +21,7 @@ export default function BalancePaymentPage() {
   const [reference, setReference] = useState("");
   const [loading, setLoading] = useState<"idle" | "fetching" | "processing">("idle");
   const [details, setDetails] = useState<BalanceDetails | null>(null);
+  const [phone, setPhone] = useState("");
 
   const fetchDetails = async () => {
     const ref = reference.trim();
@@ -38,7 +39,11 @@ export default function BalancePaymentPage() {
         setLoading("idle");
         return;
       }
-      setDetails(json.data as BalanceDetails);
+      const data = json.data as BalanceDetails & { phone_number?: string | null };
+      setDetails(data);
+      if (data?.phone_number) {
+        setPhone(String(data.phone_number));
+      }
       setLoading("idle");
       toast.success("Payment details loaded");
     } catch (err) {
@@ -47,35 +52,39 @@ export default function BalancePaymentPage() {
     }
   };
 
-  const processBalance = async () => {
+  const initiateBalance = async () => {
     if (!details) return;
     if (details.balance_due <= 0) {
       toast.info("Already fully paid");
       return;
     }
+    if (!/^\d{11}$/.test(phone)) {
+      toast.error("Enter a valid 11-digit phone number");
+      return;
+    }
     setLoading("processing");
     try {
-      const res = await fetch(`${API_URL}/payments/balance/process`, {
+      const res = await fetch(`${API_URL}/payments/balance/initiate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reference: details.transaction_ref, amount: details.balance_due }),
+        body: JSON.stringify({ reference: details.transaction_ref, gateway: "global", phoneNumber: phone }),
       });
       const json = await res.json();
       if (!res.ok || !json.success) {
-        toast.error(typeof json.error === "string" ? json.error : "Balance payment failed");
+        toast.error(typeof json.error === "string" ? json.error : "Failed to initiate balance payment");
         setLoading("idle");
         return;
       }
-      const updated = json.data as BalanceDetails;
-      setDetails((prev) => ({ ...(prev as BalanceDetails), ...updated }));
-      setLoading("idle");
-      if (updated.status === "successful") {
-        toast.success("Balance fully paid. Receipt will be available.");
-      } else {
-        toast.success("Balance payment recorded");
+      const url: string | undefined = json.data?.authorization_url ?? json.data?.link;
+      if (!url) {
+        toast.error("Payment gateway did not return a redirect URL");
+        setLoading("idle");
+        return;
       }
+      toast.success("Redirecting to payment gateway...");
+      window.location.href = url;
     } catch (err) {
-      toast.error("Unable to process balance payment");
+      toast.error("Unable to initiate balance payment");
       setLoading("idle");
     }
   };
@@ -128,12 +137,21 @@ export default function BalancePaymentPage() {
           </div>
 
           <div className="pt-2">
-            <button
-              onClick={processBalance}
-              disabled={loading !== "idle" || details.balance_due <= 0}
-              className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
-            >
-              {details.balance_due > 0 ? (loading === "processing" ? "Processing..." : "Pay Balance") : "Fully Paid"}
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter 11-digit phone number"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div className="pt-2">
+              <button
+                onClick={initiateBalance}
+                disabled={loading !== "idle" || details.balance_due <= 0}
+                className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
+              >
+              {details.balance_due > 0 ? (loading === "processing" ? "Redirecting..." : "Pay Balance") : "Fully Paid"}
             </button>
           </div>
         </div>

@@ -100,6 +100,11 @@ export default function AdminPaymentsPage() {
     });
   }, [payments, query, statusFilter, programTypeFilter, levelFilter, startDate, endDate]);
 
+  const selectedChildren = useMemo(() => {
+    if (!selectedPayment) return [] as AdminPayment[];
+    return payments.filter((p) => p.original_reference === selectedPayment.transaction_ref);
+  }, [payments, selectedPayment]);
+
   const paymentStats = useMemo(() => {
     const total = filtered.length;
     const successful = filtered.filter(p => p.status === 'successful').length;
@@ -877,7 +882,53 @@ export default function AdminPaymentsPage() {
                       {selectedPayment.transaction_ref}
                     </code>
                   </div>
-                </div>
+              </div>
+              </div>
+
+              {/* Balance Linkage */}
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                  <LinkIcon className="w-4 h-4" />
+                  Balance Linkage
+                </h4>
+                {selectedPayment?.original_reference ? (
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
+                      This is a balance child payment linked to:
+                    </p>
+                    <code className="block text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono">
+                      {selectedPayment.original_reference}
+                    </code>
+                    <button
+                      onClick={() => { setQuery(selectedPayment.original_reference ?? ""); setDetailsOpen(false); }}
+                      className="mt-2 inline-flex items-center gap-2 px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 dark:bg-blue-900/40 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800/50"
+                    >
+                      <MagnifyingGlassIcon className="w-3 h-3" />
+                      Find parent in list
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">This is an original payment.</p>
+                    {selectedChildren.length > 0 ? (
+                      <div>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">Linked balance payments:</p>
+                        <ul className="mt-2 space-y-1">
+                          {selectedChildren.map((c) => (
+                            <li key={c.payment_id} className="text-xs text-gray-800 dark:text-gray-200 flex items-center justify-between bg-white dark:bg-gray-800 rounded-md px-2 py-1 border border-gray-200 dark:border-gray-700">
+                              <span className="font-mono">{c.transaction_ref}</span>
+                              <span className={c.status === 'successful' ? 'text-green-600' : c.status === 'pending' ? 'text-yellow-600' : 'text-red-600'}>
+                                {c.status}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-400">No balance payments linked.</p>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Academic Information */}

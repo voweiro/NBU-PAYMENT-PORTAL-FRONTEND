@@ -37,7 +37,7 @@ export default function StudentPaymentPage() {
   const [jambNumber, setJambNumber] = useState("");
   const [matricNumber, setMatricNumber] = useState("");
   const [selectedFeeIds, setSelectedFeeIds] = useState<number[]>([]);
-  const [percent, setPercent] = useState<50 | 100>(100);
+  const [percent, setPercent] = useState<25 | 50 | 75 | 100>(100);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [level, setLevel] = useState<Level | undefined>(undefined);
   const [generatedReference, setGeneratedReference] = useState<string | null>(null);
@@ -512,26 +512,44 @@ const payableAmount = Math.round(totalAmount * (percent / 100));
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Payment Option</h2>
               </div>
               <div className="space-y-4">
-                <div className="flex gap-4">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input 
-                        type="radio" 
-                        checked={percent === 100} 
-                        onChange={() => setPercent(100)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay Full Amount (100%)</span>
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input 
-                        type="radio" 
-                        checked={percent === 50} 
-                        onChange={() => setPercent(50)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay Partial Amount (50%)</span>
-                    </label>
-                  </div>
+                <div className="flex flex-wrap gap-4">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={percent === 100}
+                      onChange={() => setPercent(100)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay Full Amount (100%)</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={percent === 75}
+                      onChange={() => setPercent(75)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay 75%</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={percent === 50}
+                      onChange={() => setPercent(50)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay 50%</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={percent === 25}
+                      onChange={() => setPercent(25)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay 25%</span>
+                  </label>
+                </div>
                 {selectedFees.length > 0 && (
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex justify-between items-center">

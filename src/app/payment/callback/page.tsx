@@ -38,12 +38,17 @@ function PaymentCallbackContent() {
       | "flutterwave"
       | "global"
       | null;
+    // Prefer provider-issued reference for GlobalPay (Ref/payRef) if available,
+    // otherwise fall back to our merchant reference
     const reference =
+      searchParams.get("Ref") ||
+      searchParams.get("payRef") ||
+      searchParams.get("globalpay_ref") ||
+      searchParams.get("merchantReference") ||
       searchParams.get("reference") ||
       searchParams.get("tx_ref") ||
-      searchParams.get("txnref") ||
-      searchParams.get("globalpay_ref") ||
-      searchParams.get("Ref");
+      searchParams.get("txnref");
+    const originalRef = searchParams.get("original_reference") || undefined;
     if (!gatewayParam || !reference) {
       setStatus("failed");
       return;
@@ -69,7 +74,22 @@ function PaymentCallbackContent() {
     };
 
     // Add a small delay for better UX
-    const timer = setTimeout(verify, 1500);
+    const timer = setTimeout(async () => {
+      try {
+        const result = await dispatch(
+          verifyPayment({ reference, gateway: gatewayParam, originalRef })
+        ).unwrap() as { status: string; paymentId?: number; verifyData?: { responseCode?: string; responseMessage?: string; error?: string } };
+        setStatus(result.status === "successful" ? "success" : "failed");
+        setPaymentId(result.paymentId ?? null);
+        const vd = result?.verifyData ?? {};
+        setProviderCode(vd?.responseCode ?? null);
+        setProviderMessage(vd?.responseMessage ?? vd?.error ?? null);
+      } catch (error) {
+        setStatus("failed");
+        const msg = error instanceof Error ? error.message : "Verification failed";
+        setErrorMsg(msg);
+      }
+    }, 1500);
     return () => clearTimeout(timer);
   }, [searchParams, dispatch]);
 

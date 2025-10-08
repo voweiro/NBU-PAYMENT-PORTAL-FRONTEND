@@ -14,7 +14,7 @@ export const initiatePayment = createAsyncThunk(
       jambNumber?: string;
       matricNumber?: string;
       level?: Level;
-      percent?: 50 | 100;
+      percent?: 25 | 50 | 75 | 100;
       phoneNumber?: string;
       address?: string;
     },
@@ -57,11 +57,13 @@ export const initiatePayment = createAsyncThunk(
 export const verifyPayment = createAsyncThunk(
   "payment/verify",
   async (
-    { reference, gateway }: { reference: string; gateway: "paystack" | "flutterwave" | "global" },
+    { reference, gateway, originalRef }: { reference: string; gateway: "paystack" | "flutterwave" | "global"; originalRef?: string },
     { rejectWithValue }
   ) => {
     try {
-      const url = `${API_URL}/payments/verify/${encodeURIComponent(reference)}?gateway=${gateway}`;
+      const q = new URLSearchParams({ gateway });
+      if (originalRef) q.set("original_reference", originalRef);
+      const url = `${API_URL}/payments/verify/${encodeURIComponent(reference)}?${q.toString()}`;
       const res = await fetch(url);
       const json = await res.json();
       if (!res.ok || !json.success) {

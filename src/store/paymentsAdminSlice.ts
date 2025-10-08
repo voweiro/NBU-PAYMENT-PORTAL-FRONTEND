@@ -10,6 +10,7 @@ export type AdminPayment = {
   fee_id: number;
   amount_paid: number;
   transaction_ref: string;
+  original_reference?: string | null;
   status: PaymentStatus;
   payment_date: string;
   receipt_drive_url?: string | null;
