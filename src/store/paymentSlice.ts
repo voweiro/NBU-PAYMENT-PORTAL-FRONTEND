@@ -6,7 +6,8 @@ export const initiatePayment = createAsyncThunk(
   "payment/initiate",
   async (
     payload: {
-      feeId: number;
+      feeId?: number;
+      feeIds?: number[];
       studentEmail: string;
       studentName?: string;
       gateway?: "paystack" | "flutterwave" | "global";
@@ -25,7 +26,8 @@ export const initiatePayment = createAsyncThunk(
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...payload,
-          feeId: String(payload.feeId),
+          feeId: payload.feeId !== undefined ? String(payload.feeId) : undefined,
+          feeIds: Array.isArray(payload.feeIds) ? payload.feeIds.map((id) => String(id)) : undefined,
         }),
       });
       const json = await res.json();
@@ -76,7 +78,8 @@ export const verifyPayment = createAsyncThunk(
 
 type PaymentState = {
   selectedProgramId?: number;
-  selectedFeeId?: number;
+  selectedFeeId?: number; // legacy single selection
+  selectedFeeIds?: number[]; // new multi-selection
   studentEmail?: string;
   studentName?: string;
   gateway: "paystack" | "flutterwave" | "global";
@@ -104,6 +107,9 @@ const paymentSlice = createSlice({
     },
     setFeeId(state, action: PayloadAction<number | undefined>) {
       state.selectedFeeId = action.payload;
+    },
+    setFeeIds(state, action: PayloadAction<number[] | undefined>) {
+      state.selectedFeeIds = action.payload ?? [];
     },
     setStudentInfo(
       state,

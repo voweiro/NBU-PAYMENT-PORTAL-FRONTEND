@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { toggleTheme } from "@/store/uiSlice";
 import Header from "@/components/Header";
 
+
 const UNIVERSITY_NAME = process.env.NEXT_PUBLIC_UNIVERSITY_NAME ?? "Nigerian British University";
 
 export default function Home() {
@@ -178,7 +179,7 @@ export default function Home() {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <img
-                  src="/university-logo.png"
+                  src="logo.png"
                   alt={`${UNIVERSITY_NAME} Logo`}
                   className="h-8 w-8 rounded bg-white object-contain p-1"
                   onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/vercel.svg"; }}

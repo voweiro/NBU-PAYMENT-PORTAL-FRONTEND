@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { toggleTheme } from "@/store/uiSlice";
 
+
 const UNIVERSITY_NAME = process.env.NEXT_PUBLIC_UNIVERSITY_NAME ?? "Nigerian British University";
 
 interface HeaderProps {

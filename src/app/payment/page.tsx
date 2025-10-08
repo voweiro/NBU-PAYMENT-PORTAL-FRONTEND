@@ -36,7 +36,7 @@ export default function StudentPaymentPage() {
   const [studentCategory, setStudentCategory] = useState<StudentCategory>("new");
   const [jambNumber, setJambNumber] = useState("");
   const [matricNumber, setMatricNumber] = useState("");
-  const [selectedFeeId, setSelectedFeeId] = useState<number | undefined>(undefined);
+  const [selectedFeeIds, setSelectedFeeIds] = useState<number[]>([]);
   const [percent, setPercent] = useState<50 | 100>(100);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [level, setLevel] = useState<Level | undefined>(undefined);
@@ -60,18 +60,19 @@ export default function StudentPaymentPage() {
     }
   }, [dispatch, programId]);
 
-  // Reset level when program type, program, or fee changes
+  // Reset level when program type, program, or selected fees change
   useEffect(() => {
     setLevel(undefined);
-  }, [programType, programId, selectedFeeId]);
+  }, [programType, programId, selectedFeeIds]);
 
   useEffect(() => {
     if (paymentError) toast.error(paymentError);
   }, [paymentError]);
 
-  const selectedFee: Fee | undefined = useMemo(() => fees.find((f) => f.fee_id === selectedFeeId), [fees, selectedFeeId]);
-  const feeAmount = selectedFee ? Number(selectedFee.amount) : 0;
-  const payableAmount = Math.round(feeAmount * (percent / 100));
+  const selectedFees: Fee[] = useMemo(() => fees.filter((f) => selectedFeeIds.includes(f.fee_id)), [fees, selectedFeeIds]);
+  const singleSelectedFee: Fee | undefined = selectedFees.length === 1 ? selectedFees[0] : undefined;
+  const totalAmount = selectedFees.reduce((sum, f) => sum + Number(f.amount), 0);
+const payableAmount = Math.round(totalAmount * (percent / 100));
   const feesForLevel = useMemo(() => {
     if (!programId) return [] as Fee[];
     if (programType !== "undergraduate") return fees;
@@ -86,11 +87,11 @@ export default function StudentPaymentPage() {
   // Available levels for undergraduates:
   const allStudentLevels: Exclude<Level, "ALL">[] = ["L100", "L200", "L300", "L400", "L500", "L600"];
   const availableLevels: Exclude<Level, "ALL">[] = useMemo(() => {
-    if (!selectedFee) return allStudentLevels;
-    const lvls = selectedFee.levels ?? null;
+    if (!singleSelectedFee) return allStudentLevels;
+    const lvls = singleSelectedFee.levels ?? null;
     if (!lvls || lvls.length === 0 || lvls.includes("ALL")) return allStudentLevels;
     return lvls.filter((l) => l !== "ALL") as Exclude<Level, "ALL">[];
-  }, [selectedFee]);
+  }, [singleSelectedFee]);
 
   const isUndergrad = programType === "undergraduate";
   const jambRequired = isUndergrad && studentCategory === "new";
@@ -104,7 +105,7 @@ export default function StudentPaymentPage() {
     if (!emailOk) return toast.warn("Enter a valid email address");
     if (!programType) return toast.warn("Select your program type");
     if (!programId) return toast.warn("Select your program");
-    if (!selectedFeeId) return toast.warn("Select a fee to pay");
+    if (selectedFeeIds.length === 0) return toast.warn("Select at least one fee to pay");
     if (jambRequired && !jambNumber.trim()) return toast.warn("JAMB number is required for new undergraduate students");
     if (matricRequired && !matricNumber.trim()) return toast.warn("Matric number is required for returning undergraduate students");
     if (gateway === "global") {
@@ -128,14 +129,14 @@ export default function StudentPaymentPage() {
       try {
         const result = await dispatch(
           initiatePayment({
-            feeId: selectedFeeId!,
+            ...(selectedFeeIds.length === 1 ? { feeId: selectedFeeIds[0] } : { feeIds: selectedFeeIds }),
             studentEmail,
             studentName,
             gateway,
             jambNumber: jambNumber || undefined,
             matricNumber: matricNumber || undefined,
             level: isUndergrad ? level : undefined,
-            percent,
+            percent: percent,
             phoneNumber: phoneNumber || undefined,
             address: address || undefined,
           })
@@ -163,7 +164,7 @@ export default function StudentPaymentPage() {
       programType !== "undergraduate" || (level && (studentCategory === "new" ? jambNumber.trim() : matricNumber.trim()))
     )
   );
-  const feeChosen = Boolean(selectedFeeId);
+  const feeChosen = selectedFeeIds.length > 0;
   const canProceed = requiredFilled && (!isUndergrad || !!level) && feeChosen;
 
   const onConfirmPayment = async () => {
@@ -280,7 +281,7 @@ export default function StudentPaymentPage() {
                       setProgramType(val);
                       // reset dependent selections
                       setProgramId(undefined);
-                      setSelectedFeeId(undefined);
+                      setSelectedFeeIds([]);
                     }}
                   >
                     <option value="">Select type</option>
@@ -298,7 +299,7 @@ export default function StudentPaymentPage() {
                     onChange={(e) => {
                       const id = Number(e.target.value) || undefined;
                       setProgramId(id);
-                      setSelectedFeeId(undefined);
+                      setSelectedFeeIds([]);
                     }}
                     disabled={!programType}
                   >
@@ -459,36 +460,43 @@ export default function StudentPaymentPage() {
               
               {programId && feesStatus === "succeeded" && (!isUndergrad || !!level) && feesForLevel.length > 0 && (
                 <div className="space-y-3">
-                  {feesForLevel.map((f) => (
-                    <label 
-                      key={f.fee_id} 
-                      className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md ${
-                        selectedFeeId === f.fee_id 
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
-                          : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-gray-500'
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <input
-                          type="radio"
-                          name="fee"
-                          checked={selectedFeeId === f.fee_id}
-                          onChange={() => setSelectedFeeId(f.fee_id)}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <div>
-                          <div className="text-sm font-semibold text-gray-900 dark:text-white">{f.fee_category}</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            Session: {f.session || "N/A"} • Semester: {f.semester || "N/A"}
+                  {feesForLevel.map((f) => {
+                    const checked = selectedFeeIds.includes(f.fee_id);
+                    return (
+                      <label 
+                        key={f.fee_id} 
+                        className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md ${
+                          checked 
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                            : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-gray-500'
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={(e) => {
+                              setSelectedFeeIds((prev) => {
+                                if (e.target.checked) return [...prev, f.fee_id];
+                                return prev.filter((id) => id !== f.fee_id);
+                              });
+                            }}
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                          <div>
+                            <div className="text-sm font-semibold text-gray-900 dark:text-white">{f.fee_category}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              Session: {f.session || "N/A"} • Semester: {f.semester || "N/A"}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-gray-900 dark:text-white">₦{Number(f.amount).toLocaleString()}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">Total Amount</div>
-                      </div>
-                    </label>
-                  ))}
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-gray-900 dark:text-white">₦{Number(f.amount).toLocaleString()}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">Total Amount</div>
+                        </div>
+                      </label>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -505,26 +513,26 @@ export default function StudentPaymentPage() {
               </div>
               <div className="space-y-4">
                 <div className="flex gap-4">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      checked={percent === 100} 
-                      onChange={() => setPercent(100)}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay Full Amount (100%)</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      checked={percent === 50} 
-                      onChange={() => setPercent(50)}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay Partial Amount (50%)</span>
-                  </label>
-                </div>
-                {selectedFeeId && (
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        checked={percent === 100} 
+                        onChange={() => setPercent(100)}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay Full Amount (100%)</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        checked={percent === 50} 
+                        onChange={() => setPercent(50)}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pay Partial Amount (50%)</span>
+                    </label>
+                  </div>
+                {selectedFees.length > 0 && (
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Amount to pay:</span>
@@ -615,9 +623,9 @@ export default function StudentPaymentPage() {
                 <p><span className="text-neutral-600 dark:text-neutral-400">Email:</span> {studentEmail}</p>
                 <p><span className="text-neutral-600 dark:text-neutral-400">Program Type:</span> {programType}</p>
                 <p><span className="text-neutral-600 dark:text-neutral-400">Program:</span> {programOptions.find(p => p.program_id === programId)?.program_name ?? "-"}</p>
-                <p><span className="text-neutral-600 dark:text-neutral-400">Fee:</span> {selectedFee?.fee_category ?? "-"}</p>
-                <p><span className="text-neutral-600 dark:text-neutral-400">Total Fee:</span> ₦{feeAmount.toLocaleString()}</p>
-                <p><span className="text-neutral-600 dark:text-neutral-400">Paying:</span> {percent}% (₦{payableAmount.toLocaleString()})</p>
+                <p><span className="text-neutral-600 dark:text-neutral-400">Fees:</span> {selectedFees.map(f => f.fee_category).join(", ") || "-"}</p>
+                <p><span className="text-neutral-600 dark:text-neutral-400">Total:</span> ₦{(selectedFees.length === 1 ? Number(singleSelectedFee?.amount ?? 0) : totalAmount).toLocaleString()}</p>
+                <p><span className="text-neutral-600 dark:text-neutral-400">Paying:</span> {`${percent}%`} (₦{payableAmount.toLocaleString()})</p>
                 <p><span className="text-neutral-600 dark:text-neutral-400">Gateway:</span> {gateway}</p>
                 {isUndergrad && (
                   <p><span className="text-neutral-600 dark:text-neutral-400">{studentCategory === "new" ? "JAMB" : "Matric"}:</span> {studentCategory === "new" ? (jambNumber || "-") : (matricNumber || "-")}</p>
