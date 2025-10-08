@@ -561,7 +561,12 @@ export default function AdminPaymentsPage() {
                      </span>
                    </td>
                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                     {p.fee?.fee_category ?? p.fee_id}
+                     {Array.isArray(p.items) && p.items.length > 0
+                       ? p.items
+                           .map((it) => (it.fee_category ? String(it.fee_category) : (it.fee_id != null ? String(it.fee_id) : '')))
+                           .filter((s) => s && s.length > 0)
+                           .join(', ')
+                       : (p.fee?.fee_category ?? String(p.fee_id))}
                    </td>
                    <td className="px-6 py-4">
                      <div className="flex items-center space-x-2">
@@ -706,9 +711,14 @@ export default function AdminPaymentsPage() {
                    <div>
                      <span className="text-gray-500 dark:text-gray-400">Fee:</span>
                      <p className="font-medium text-gray-900 dark:text-white truncate">
-                       {p.fee?.fee_category ?? p.fee_id}
+                       {Array.isArray(p.items) && p.items.length > 0
+                         ? p.items
+                             .map((it) => (it.fee_category ? String(it.fee_category) : (it.fee_id != null ? String(it.fee_id) : '')))
+                             .filter((s) => s && s.length > 0)
+                             .join(', ')
+                         : (p.fee?.fee_category ?? String(p.fee_id))}
                      </p>
-                   </div>
+                  </div>
                    <div>
                      <span className="text-gray-500 dark:text-gray-400">Level:</span>
                      <p className="font-medium text-gray-900 dark:text-white">
@@ -860,7 +870,27 @@ export default function AdminPaymentsPage() {
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">Full Amount:</span>
                     <span className="ml-2 font-semibold text-gray-900 dark:text-white">
-                      ₦{Number(selectedPayment.amount_paid).toLocaleString()}
+                      ₦{
+                        (() => {
+                          const paid = Number(selectedPayment.amount_paid) || 0;
+                          // Prefer items sum for multi-fee payments
+                          const itemsTotal = Array.isArray(selectedPayment.items) && selectedPayment.items.length > 0
+                            ? selectedPayment.items.reduce((sum, it) => sum + Number(it.amount ?? 0), 0)
+                            : NaN;
+                          const feeVal = selectedPayment.fee?.amount;
+                          const feeAmt = feeVal !== undefined && feeVal !== null ? Number(feeVal) : NaN;
+                          const balVal = selectedPayment.balance_due;
+                          const balDue = balVal !== undefined && balVal !== null ? Number(balVal) : NaN;
+                          const full = Number.isFinite(itemsTotal)
+                            ? itemsTotal
+                            : Number.isFinite(feeAmt)
+                              ? feeAmt
+                              : Number.isFinite(balDue)
+                                ? paid + balDue
+                                : paid;
+                          return Number(full).toLocaleString();
+                        })()
+                      }
                     </span>
                   </div>
                   <div>
@@ -869,10 +899,59 @@ export default function AdminPaymentsPage() {
                       ₦{Number(selectedPayment.amount_paid).toLocaleString()}
                     </span>
                   </div>
+                  <div>
+                    <span className="text-gray-600 dark:text-gray-400">Percentage Paid:</span>
+                    <span className="ml-2 font-semibold text-gray-900 dark:text-white">
+                      {(() => {
+                        const paid = Number(selectedPayment.amount_paid) || 0;
+                        const itemsTotal = Array.isArray(selectedPayment.items) && selectedPayment.items.length > 0
+                          ? selectedPayment.items.reduce((sum, it) => sum + Number(it.amount ?? 0), 0)
+                          : NaN;
+                        const feeVal = selectedPayment.fee?.amount;
+                        const feeAmt = feeVal !== undefined && feeVal !== null ? Number(feeVal) : NaN;
+                        const balVal = selectedPayment.balance_due;
+                        const balDue = balVal !== undefined && balVal !== null ? Number(balVal) : NaN;
+                        const full = Number.isFinite(itemsTotal)
+                          ? itemsTotal
+                          : Number.isFinite(feeAmt)
+                            ? feeAmt
+                            : Number.isFinite(balDue)
+                              ? paid + balDue
+                              : paid;
+                        const pctBase = typeof selectedPayment.percentage_paid === 'number' && !Number.isNaN(selectedPayment.percentage_paid)
+                          ? Number(selectedPayment.percentage_paid)
+                          : (full > 0 ? (paid / full) * 100 : 0);
+                        const pct = Math.round(Math.min(100, Math.max(0, pctBase)));
+                        return `${pct}%`;
+                      })()}
+                    </span>
+                  </div>
                   <div className="md:col-span-2">
                     <span className="text-gray-600 dark:text-gray-400">Payment Type:</span>
                     <span className="ml-2 font-medium text-gray-900 dark:text-white">
-                      Full Payment
+                      {(() => {
+                        const paid = Number(selectedPayment.amount_paid) || 0;
+                        const itemsTotal = Array.isArray(selectedPayment.items) && selectedPayment.items.length > 0
+                          ? selectedPayment.items.reduce((sum, it) => sum + Number(it.amount ?? 0), 0)
+                          : NaN;
+                        const feeVal = selectedPayment.fee?.amount;
+                        const feeAmt = feeVal !== undefined && feeVal !== null ? Number(feeVal) : NaN;
+                        const balVal = selectedPayment.balance_due;
+                        const balDue = balVal !== undefined && balVal !== null ? Number(balVal) : NaN;
+                        const full = Number.isFinite(itemsTotal)
+                          ? itemsTotal
+                          : Number.isFinite(feeAmt)
+                            ? feeAmt
+                            : Number.isFinite(balDue)
+                              ? paid + balDue
+                              : paid;
+                        const pctBase = typeof selectedPayment.percentage_paid === 'number' && !Number.isNaN(selectedPayment.percentage_paid)
+                          ? Number(selectedPayment.percentage_paid)
+                          : (full > 0 ? (paid / full) * 100 : 0);
+                        const pctRounded = Math.min(100, Math.max(0, Math.round(pctBase)));
+                        const isPartial = !!selectedPayment.original_reference || pctRounded < 100;
+                        return isPartial ? `Partial Payment (${pctRounded}%)` : 'Full Payment';
+                      })()}
                     </span>
                   </div>
                   {/* Balance section removed since we don't have access to original fee amount */}

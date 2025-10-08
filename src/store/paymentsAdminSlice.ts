@@ -11,6 +11,9 @@ export type AdminPayment = {
   amount_paid: number;
   transaction_ref: string;
   original_reference?: string | null;
+  percentage_paid?: number | null;
+  balance_due?: number | null;
+  items?: { fee_id?: number; fee_category?: string; amount?: number | string }[] | null;
   status: PaymentStatus;
   payment_date: string;
   receipt_drive_url?: string | null;
@@ -19,7 +22,7 @@ export type AdminPayment = {
   jamb_number?: string | null;
   matric_number?: string | null;
   level?: string | null;
-  fee?: { fee_category: string; program?: { program_name: string; program_type: string } };
+  fee?: { fee_category: string; amount?: number | string; program?: { program_name: string; program_type: string } };
 };
 
 export const fetchPayments = createAsyncThunk<AdminPayment[], void, { state: RootState }>(
