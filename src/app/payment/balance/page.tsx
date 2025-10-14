@@ -102,8 +102,20 @@ export default function BalancePaymentPage() {
           <p className="text-sm text-gray-600 dark:text-gray-400">Look up your transaction and settle any outstanding balance.</p>
         </div>
 
+        {/* How it works */}
+        <div className="rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 p-5 shadow-sm">
+          <h2 className="text-base font-semibold text-amber-900 dark:text-amber-200 mb-2">How balance payment works</h2>
+          <ol className="list-decimal pl-5 space-y-1 text-sm text-amber-900/90 dark:text-amber-200/90">
+            <li>Enter your original transaction reference and click Fetch.</li>
+            <li>Review the summary: amount paid, balance due, and fees.</li>
+            <li>If there’s a balance, enter your 11‑digit phone number for GlobalPay.</li>
+            <li>Click Pay Balance to continue to the secure gateway.</li>
+            <li>After successful payment, your receipt will show “Balance Settlement”.</li>
+          </ol>
+        </div>
+
         {/* Lookup Form */}
-        <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm">
+        <div className="mt-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm">
           <label className="block text-xs font-medium mb-2">Transaction Reference</label>
           <div className="flex gap-2">
             <input

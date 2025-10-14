@@ -197,6 +197,13 @@ const payableAmount = Math.round(totalAmount * (percent / 100));
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Complete your payment securely and efficiently. Fill out the form below with your details and proceed to payment.
           </p>
+          {/* Balance Payment Link */}
+          <div className="mt-4 inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 px-4 py-2 rounded-full border border-blue-200 dark:border-blue-800">
+            <span className="text-sm">Already started a payment and need to finish the balance?</span>
+            <a href="/payment/balance" className="text-sm font-semibold underline underline-offset-2 hover:no-underline">
+              Click here to pay balance
+            </a>
+          </div>
         </div>
 
 
