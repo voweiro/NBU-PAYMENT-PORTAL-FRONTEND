@@ -36,12 +36,10 @@ export default function SimpleChart({ data, type, height = 200 }: SimpleChartPro
                     }}
                   />
                 </div>
-                <div className="mt-2 text-xs text-gray-600 dark:text-gray-400 text-center">
+                <div className="mt-2 text-xs text-gray-600 text-center">
                   {item.label}
                 </div>
-                <div className="text-xs font-medium text-gray-900 dark:text-white">
-                  {item.value}
-                </div>
+                <div className="text-xs font-medium text-gray-900">{item.value}</div>
               </div>
             );
           })}
@@ -83,11 +81,11 @@ export default function SimpleChart({ data, type, height = 200 }: SimpleChartPro
               );
             })}
           </svg>
-          <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-600 dark:text-gray-400">
+          <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-600">
             {data.map((item, index) => (
               <div key={index} className="text-center">
                 <div>{item.label}</div>
-                <div className="font-medium text-gray-900 dark:text-white">{item.value}</div>
+                <div className="font-medium text-gray-900">{item.value}</div>
               </div>
             ))}
           </div>

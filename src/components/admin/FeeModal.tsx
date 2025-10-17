@@ -103,28 +103,28 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl border border-gray-200">
         {/* Header */}
-        <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4 rounded-t-2xl">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                 <span className="text-white text-lg">💰</span>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-bold text-gray-900">
                   {isEditing ? "Edit Fee" : "Add New Fee"}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-gray-500">
                   {isEditing ? "Update fee information" : "Create a new fee for the selected program"}
                 </p>
               </div>
             </div>
             <button 
               onClick={onClose} 
-              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
             >
-              <span className="text-gray-500 dark:text-gray-400">✕</span>
+              <span className="text-gray-500">✕</span>
             </button>
           </div>
         </div>
@@ -132,18 +132,18 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Program Selection Section */}
-          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <div className="bg-gray-50 rounded-xl p-4 space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               🎯 Program Information
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Program Type *
                 </label>
                 <select
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value as Program["program_type"])}
                   disabled={isEditing}
@@ -156,18 +156,18 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
                   ))}
                 </select>
                 {isEditing && (
-                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                  <p className="text-xs text-amber-600 mt-1">
                     ⚠️ Program type cannot be changed when editing
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Program *
                 </label>
                 <select
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   value={selectedProgramId ?? ""}
                   onChange={(e) => setSelectedProgramId(e.target.value ? Number(e.target.value) : undefined)}
                   disabled={isEditing || !selectedType}
@@ -180,7 +180,7 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
                   ))}
                 </select>
                 {!selectedType && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     Please select a program type first
                   </p>
                 )}
@@ -190,8 +190,8 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
 
           {/* Level Selection for Undergraduate */}
           {selectedType === "undergraduate" && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            <div className="bg-blue-50 rounded-xl p-4">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Applicable Levels *
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -205,8 +205,8 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
                       className={`
                         flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all
                         ${checked 
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" 
-                          : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
+                          ? "border-blue-500 bg-blue-50 text-blue-700" 
+                          : "border-gray-200 hover:border-gray-300"
                         }
                         ${disabledOpt ? "opacity-50 cursor-not-allowed" : ""}
                       `}
@@ -237,25 +237,25 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
                   );
                 })}
               </div>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+              <p className="text-xs text-blue-600 mt-2">
                 💡 Select specific levels or choose &quot;All Levels&quot; to apply to all undergraduate levels
               </p>
             </div>
           )}
 
           {/* Fee Details Section */}
-          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <div className="bg-gray-50 rounded-xl p-4 space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               💰 Fee Details
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Fee Category *
                 </label>
                 <input
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="e.g. Tuition Fee, Acceptance Fee, Lab Fee"
@@ -263,14 +263,14 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Amount (NGN) *
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">₦</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₦</span>
                   <input
                     type="text"
-                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 pl-8 pr-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full rounded-lg border border-gray-300 pl-8 pr-4 py-3 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     value={formatAmount(amount)}
                     onChange={(e) => {
                       const value = e.target.value.replace(/,/g, '');
@@ -286,11 +286,11 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Academic Session
                 </label>
                 <input
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   value={session}
                   onChange={(e) => setSession(e.target.value)}
                   placeholder="e.g. 2024/2025"
@@ -298,11 +298,11 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Semester
                 </label>
                 <select
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   value={semester}
                   onChange={(e) => setSemester(e.target.value)}
                 >
@@ -316,10 +316,10 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <button 
               onClick={onClose} 
-              className="px-6 py-3 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors font-medium"
+              className="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors font-medium"
               disabled={isSubmitting}
             >
               Cancel
@@ -330,7 +330,7 @@ export default function FeeModal({ isOpen, onClose, programs, onSubmit, initialD
               className={`
                 px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2
                 ${disabled || isSubmitting
-                  ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed" 
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
                   : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl"
                 }
               `}

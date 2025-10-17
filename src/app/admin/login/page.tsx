@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
   const disabled = status === "loading" || !isEmailValid || !isPasswordValid;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
@@ -139,15 +139,15 @@ export default function AdminLoginPage() {
             </div>
 
             {/* Login form card */}
-            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-gray-700/50 shadow-2xl shadow-blue-500/10">
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl shadow-blue-500/10">
               <div className="p-8">
                 {/* Form header */}
                 <div className="text-center mb-8">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <ShieldCheckIcon className="w-8 h-8 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Secure Login</h2>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400">
+                  <h2 className="text-2xl font-bold text-gray-900">Secure Login</h2>
+                  <p className="mt-2 text-gray-600">
                     Enter your administrator credentials to continue
                   </p>
                 </div>
@@ -155,7 +155,7 @@ export default function AdminLoginPage() {
                 <form onSubmit={onSubmit} className="space-y-6">
                   {/* Email field */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                       Email Address
                     </label>
                     <div className="relative">
@@ -167,15 +167,15 @@ export default function AdminLoginPage() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         placeholder="admin@university.edu"
                         aria-invalid={!isEmailValid && email.length > 0}
                         required
                       />
                     </div>
                     {!isEmailValid && email.length > 0 && (
-                      <p className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
-                        <span className="w-4 h-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">!</span>
+                      <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center">!</span>
                         Please enter a valid email address
                       </p>
                     )}
@@ -183,7 +183,7 @@ export default function AdminLoginPage() {
 
                   {/* Password field */}
                   <div>
-                    <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                       Password
                     </label>
                     <div className="relative">
@@ -195,7 +195,7 @@ export default function AdminLoginPage() {
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         placeholder="Enter your password"
                         aria-invalid={!isPasswordValid && password.length > 0}
                         required
@@ -203,7 +203,7 @@ export default function AdminLoginPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword((v) => !v)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
                       >
                         {showPassword ? (
                           <EyeSlashIcon className="h-5 w-5" />
@@ -268,13 +268,13 @@ export default function AdminLoginPage() {
 
             {/* Footer */}
             <div className="mt-8 text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600">
                 Need access? 
-                <Link href="#" className="ml-1 text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors">
+                <Link href="#" className="ml-1 text-blue-600 hover:text-blue-500 font-medium transition-colors">
                   Contact an administrator
                 </Link>
               </p>
-              <p className="mt-2 text-xs text-gray-500 dark:text-gray-500">
+              <p className="mt-2 text-xs text-gray-500">
                 © 2024 {UNIVERSITY_NAME}. All rights reserved.
               </p>
             </div>

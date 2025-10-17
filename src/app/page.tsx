@@ -1,20 +1,18 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/store";
-import { toggleTheme } from "@/store/uiSlice";
 import Header from "@/components/Header";
-
 
 const UNIVERSITY_NAME = process.env.NEXT_PUBLIC_UNIVERSITY_NAME ?? "Nigerian British University";
 
 export default function Home() {
-  const theme = useAppSelector((s) => s.ui.theme);
+  
   const dispatch = useAppDispatch();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900">
       {/* Header */}
-      <Header currentPage="home" showThemeToggle={true} />
+      <Header currentPage="home" />
 
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">

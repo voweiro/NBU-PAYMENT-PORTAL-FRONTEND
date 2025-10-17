@@ -78,7 +78,7 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div 
-        className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+        className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
         onKeyDown={handleKeyDown}
       >
         {/* Header */}
@@ -111,7 +111,7 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
         <div className="p-6 space-y-6">
           {/* Name Field */}
           <div className="space-y-2">
-            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
               <UserIcon className="w-4 h-4" />
               <span>Full Name</span>
             </label>
@@ -119,8 +119,8 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
               type="text"
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
                 name && !isNameValid
-                  ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
-                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+                  ? 'border-red-300 bg-red-50'
+                  : 'border-gray-300 bg-white'
               } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -128,7 +128,7 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
               autoFocus={!isEditing}
             />
             {name && !isNameValid && (
-              <div className="flex items-center space-x-1 text-red-600 dark:text-red-400 text-xs">
+              <div className="flex items-center space-x-1 text-red-600 text-xs">
                 <ExclamationTriangleIcon className="w-3 h-3" />
                 <span>Name must be at least 2 characters long</span>
               </div>
@@ -137,7 +137,7 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
               <EnvelopeIcon className="w-4 h-4" />
               <span>Email Address</span>
             </label>
@@ -145,10 +145,10 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
               type="email"
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
                 isEditing
-                  ? 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 cursor-not-allowed'
+                  ? 'border-gray-200 bg-gray-50 cursor-not-allowed'
                   : email && !isEmailValid
-                  ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
-                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+                  ? 'border-red-300 bg-red-50'
+                  : 'border-gray-300 bg-white'
               } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -156,13 +156,13 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
               disabled={isEditing}
             />
             {!isEditing && email && !isEmailValid && (
-              <div className="flex items-center space-x-1 text-red-600 dark:text-red-400 text-xs">
+              <div className="flex items-center space-x-1 text-red-600 text-xs">
                 <ExclamationTriangleIcon className="w-3 h-3" />
                 <span>Please enter a valid email address</span>
               </div>
             )}
             {isEditing && (
-              <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 text-xs">
+              <div className="flex items-center space-x-1 text-gray-500 text-xs">
                 <CheckCircleIcon className="w-3 h-3" />
                 <span>Email cannot be changed after creation</span>
               </div>
@@ -171,19 +171,19 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
 
           {/* Role Field */}
           <div className="space-y-2">
-            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
               <ShieldCheckIcon className="w-4 h-4" />
               <span>Role</span>
             </label>
             <select
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={role}
               onChange={(e) => setRole(e.target.value as Admin["role"])}
             >
               <option value="admin">Admin</option>
               <option value="super_admin">Super Admin</option>
             </select>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
+            <div className="text-xs text-gray-500">
               {role === "super_admin" 
                 ? "Full access to all admin features and user management"
                 : "Standard admin access with limited permissions"
@@ -193,7 +193,7 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
 
           {/* Password Field */}
           <div className="space-y-2">
-            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
               <LockClosedIcon className="w-4 h-4" />
               <span>{isEditing ? "New Password (Optional)" : "Password"}</span>
             </label>
@@ -201,21 +201,21 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
               type="password"
               className={`w-full px-4 py-3 rounded-lg border transition-colors ${
                 !isEditing && password && !isPasswordValid
-                  ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
-                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+                  ? 'border-red-300 bg-red-50'
+                  : 'border-gray-300 bg-white'
               } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder={isEditing ? "Leave blank to keep current password" : "Enter password (min. 6 characters)"}
             />
             {!isEditing && password && !isPasswordValid && (
-              <div className="flex items-center space-x-1 text-red-600 dark:text-red-400 text-xs">
+              <div className="flex items-center space-x-1 text-red-600 text-xs">
                 <ExclamationTriangleIcon className="w-3 h-3" />
                 <span>Password must be at least 6 characters long</span>
               </div>
             )}
             {isEditing && (
-              <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 text-xs">
+              <div className="flex items-center space-x-1 text-gray-500 text-xs">
                 <CheckCircleIcon className="w-3 h-3" />
                 <span>Leave empty to keep the current password</span>
               </div>
@@ -224,10 +224,10 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex items-center justify-end space-x-3">
+        <div className="bg-gray-50 px-6 py-4 flex items-center justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-500 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             disabled={isSubmitting}
           >
             Cancel
@@ -237,7 +237,7 @@ export default function AdminModal({ isOpen, onClose, onSubmit, initialData }: P
             disabled={disabled}
             className={`px-6 py-2 text-sm font-medium text-white rounded-lg transition-all ${
               disabled
-                ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl'
             }`}
           >

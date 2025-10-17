@@ -93,7 +93,7 @@ export default function BalancePaymentPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900">
       {/* University Header */}
-      <Header currentPage="payment" showThemeToggle />
+      <Header currentPage="payment" />
 
       <main className="max-w-3xl mx-auto px-6 py-8">
         {/* Page Title */}

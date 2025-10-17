@@ -1,21 +1,27 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { fetchPrograms, createProgram, updateProgram, deleteProgram, type Program } from "@/store/programsSlice";
+import {
+  fetchPrograms,
+  createProgram,
+  updateProgram,
+  deleteProgram,
+  type Program,
+} from "@/store/programsSlice";
 import ConfirmModal from "@/components/admin/ConfirmModal";
 import { toast } from "react-toastify";
 import ProgramModal from "@/components/admin/ProgramModal";
-import { 
-  MagnifyingGlassIcon, 
-  PlusIcon, 
+import {
+  MagnifyingGlassIcon,
+  PlusIcon,
   AcademicCapIcon,
   BookOpenIcon,
   UserGroupIcon,
   ChartBarIcon,
   PencilIcon,
   TrashIcon,
-  FunnelIcon
-} from '@heroicons/react/24/outline';
+  FunnelIcon,
+} from "@heroicons/react/24/outline";
 
 export default function AdminProgramsPage() {
   const dispatch = useAppDispatch();
@@ -33,7 +39,11 @@ export default function AdminProgramsPage() {
     const s = search.trim().toLowerCase();
     let result = items;
     if (s) {
-      result = result.filter((p) => p.program_name.toLowerCase().includes(s) || p.program_type.toLowerCase().includes(s));
+      result = result.filter(
+        (p) =>
+          p.program_name.toLowerCase().includes(s) ||
+          p.program_type.toLowerCase().includes(s)
+      );
     }
     if (typeFilter) {
       result = result.filter((p) => p.program_type === typeFilter);
@@ -43,20 +53,26 @@ export default function AdminProgramsPage() {
 
   const programStats = useMemo(() => {
     const totalPrograms = items.length;
-    const undergraduateCount = items.filter(p => p.program_type === 'undergraduate').length;
-    const postgraduateCount = items.filter(p => p.program_type === 'postgraduate').length;
-    const diplomaCount = items.filter(p => p.program_type === 'diploma').length;
-    
+    const undergraduateCount = items.filter(
+      (p) => p.program_type === "undergraduate"
+    ).length;
+    const postgraduateCount = items.filter(
+      (p) => p.program_type === "postgraduate"
+    ).length;
+    const diplomaCount = items.filter(
+      (p) => p.program_type === "diploma"
+    ).length;
+
     return {
       total: totalPrograms,
       undergraduate: undergraduateCount,
       postgraduate: postgraduateCount,
-      diploma: diplomaCount
+      diploma: diplomaCount,
     };
   }, [items]);
 
   const programTypes = useMemo(() => {
-    return [...new Set(items.map(program => program.program_type))];
+    return [...new Set(items.map((program) => program.program_type))];
   }, [items]);
 
   const openAdd = () => {
@@ -74,10 +90,15 @@ export default function AdminProgramsPage() {
     setEditing(null);
   };
 
-  const handleSubmit = async (data: { program_name: string; program_type: Program["program_type"] }) => {
+  const handleSubmit = async (data: {
+    program_name: string;
+    program_type: Program["program_type"];
+  }) => {
     try {
       if (editing) {
-        await dispatch(updateProgram({ program_id: editing.program_id, ...data })).unwrap();
+        await dispatch(
+          updateProgram({ program_id: editing.program_id, ...data })
+        ).unwrap();
         toast.success("Program updated");
       } else {
         await dispatch(createProgram(data)).unwrap();
@@ -85,7 +106,12 @@ export default function AdminProgramsPage() {
       }
       closeModal();
     } catch (err) {
-      const msg = typeof err === "string" ? err : err instanceof Error ? err.message : "Action failed";
+      const msg =
+        typeof err === "string"
+          ? err
+          : err instanceof Error
+          ? err.message
+          : "Action failed";
       toast.error(msg);
     }
   };
@@ -104,7 +130,12 @@ export default function AdminProgramsPage() {
       await dispatch(deleteProgram(toDelete.program_id)).unwrap();
       toast.success("Program deleted");
     } catch (err) {
-      const msg = typeof err === "string" ? err : err instanceof Error ? err.message : "Delete failed";
+      const msg =
+        typeof err === "string"
+          ? err
+          : err instanceof Error
+          ? err.message
+          : "Delete failed";
       toast.error(msg);
     } finally {
       setConfirmOpen(false);
@@ -114,24 +145,24 @@ export default function AdminProgramsPage() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'undergraduate':
-        return 'bg-university-blue-light text-university-blue border-university-blue-light';
-      case 'postgraduate':
-        return 'bg-university-red-light text-university-red border-university-red-light';
-      case 'diploma':
-        return 'bg-green-100 text-green-800 border-green-200';
+      case "undergraduate":
+        return "bg-university-blue-light text-university-blue border-university-blue-light";
+      case "postgraduate":
+        return "bg-university-red-light text-university-red border-university-red-light";
+      case "diploma":
+        return "bg-green-100 text-green-800 border-green-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'undergraduate':
+      case "undergraduate":
         return <BookOpenIcon className="h-4 w-4" />;
-      case 'postgraduate':
+      case "postgraduate":
         return <AcademicCapIcon className="h-4 w-4" />;
-      case 'diploma':
+      case "diploma":
         return <UserGroupIcon className="h-4 w-4" />;
       default:
         return <ChartBarIcon className="h-4 w-4" />;
@@ -139,19 +170,23 @@ export default function AdminProgramsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-university-blue-light via-white to-university-red-light">
+    <div className="min-h-screen bg-gradient-to-br from-university-t via-white to-university-red-light">
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-lg border border-university-blue-light p-6">
+        <div className="bg-[#3b82f6] text-white  rounded-xl shadow-lg border border-university-blue-light p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-university-red mb-2">Programs Management</h1>
-              <p className="text-university-blue">Manage academic programs and their types</p>
+              <h1 className="text-2xl font-bold text-white mb-2">
+                Programs Management
+              </h1>
+              <p className="text-white">
+                Manage academic programs and their types
+              </p>
             </div>
             <div className="flex items-center space-x-3">
               <button
                 onClick={openAdd}
-                className="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-university-red to-university-red-dark text-white text-sm font-medium rounded-lg hover:from-university-red-dark hover:to-university-red focus:ring-2 focus:ring-university-red focus:ring-offset-2 transition-all duration-200 shadow-sm"
+                className="inline-flex items-center px-4 py-2.5 bg-[#ff6347] text-white text-sm font-medium rounded-lg hover:bg-[#ff4500] focus:ring-2 focus:ring-[#ff6347] focus:ring-offset-2 transition-all duration-200 shadow-sm"
               >
                 <PlusIcon className="h-4 w-4 mr-2" />
                 Add Program
@@ -165,8 +200,12 @@ export default function AdminProgramsPage() {
           <div className="bg-white rounded-xl shadow-lg border border-university-blue-light p-6 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-university-blue">Total Programs</p>
-                <p className="text-2xl font-bold text-university-red mt-1">{programStats.total}</p>
+                <p className="text-sm font-medium text-university-blue">
+                  Total Programs
+                </p>
+                <p className="text-2xl font-bold text-university-red mt-1">
+                  {programStats.total}
+                </p>
               </div>
               <div className="h-12 w-12 bg-university-blue-light rounded-lg flex items-center justify-center">
                 <ChartBarIcon className="h-6 w-6 text-university-blue" />
@@ -177,8 +216,12 @@ export default function AdminProgramsPage() {
           <div className="bg-white rounded-xl shadow-lg border border-university-blue-light p-6 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-university-blue">Undergraduate</p>
-                <p className="text-2xl font-bold text-university-red mt-1">{programStats.undergraduate}</p>
+                <p className="text-sm font-medium text-university-blue">
+                  Undergraduate
+                </p>
+                <p className="text-2xl font-bold text-university-red mt-1">
+                  {programStats.undergraduate}
+                </p>
               </div>
               <div className="h-12 w-12 bg-university-blue-light rounded-lg flex items-center justify-center">
                 <BookOpenIcon className="h-6 w-6 text-university-blue" />
@@ -189,8 +232,12 @@ export default function AdminProgramsPage() {
           <div className="bg-white rounded-xl shadow-lg border border-university-red-light p-6 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-university-blue">Postgraduate</p>
-                <p className="text-2xl font-bold text-university-red mt-1">{programStats.postgraduate}</p>
+                <p className="text-sm font-medium text-university-blue">
+                  Postgraduate
+                </p>
+                <p className="text-2xl font-bold text-university-red mt-1">
+                  {programStats.postgraduate}
+                </p>
               </div>
               <div className="h-12 w-12 bg-university-red-light rounded-lg flex items-center justify-center">
                 <AcademicCapIcon className="h-6 w-6 text-university-red" />
@@ -201,8 +248,12 @@ export default function AdminProgramsPage() {
           <div className="bg-white rounded-xl shadow-lg border border-green-200 p-6 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-university-blue">Diploma</p>
-                <p className="text-2xl font-bold text-university-red mt-1">{programStats.diploma}</p>
+                <p className="text-sm font-medium text-university-blue">
+                  Diploma
+                </p>
+                <p className="text-2xl font-bold text-university-red mt-1">
+                  {programStats.diploma}
+                </p>
               </div>
               <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <UserGroupIcon className="h-6 w-6 text-green-600" />
@@ -225,7 +276,7 @@ export default function AdminProgramsPage() {
                   className="w-full pl-10 pr-4 py-2.5 border border-university-blue-light rounded-lg focus:ring-2 focus:ring-university-blue focus:border-university-blue transition-colors"
                 />
               </div>
-              
+
               <div className="relative">
                 <FunnelIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-university-blue" />
                 <select
@@ -234,13 +285,15 @@ export default function AdminProgramsPage() {
                   className="pl-10 pr-8 py-2.5 border border-university-blue-light rounded-lg focus:ring-2 focus:ring-university-blue focus:border-university-blue transition-colors appearance-none bg-white min-w-[150px]"
                 >
                   <option value="">All Types</option>
-                  {programTypes.map(type => (
-                    <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
+                  {programTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
-            
+
             <div className="text-sm text-university-blue">
               Showing {filtered.length} of {items.length} programs
             </div>
@@ -270,7 +323,9 @@ export default function AdminProgramsPage() {
                     <td colSpan={3} className="px-6 py-16 text-center">
                       <div className="flex flex-col items-center justify-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-university-blue mb-4"></div>
-                        <p className="text-university-blue font-medium">Loading programs...</p>
+                        <p className="text-university-blue font-medium">
+                          Loading programs...
+                        </p>
                       </div>
                     </td>
                   </tr>
@@ -282,8 +337,12 @@ export default function AdminProgramsPage() {
                         <div className="h-12 w-12 bg-university-red-light rounded-lg flex items-center justify-center">
                           <ChartBarIcon className="h-6 w-6 text-university-red" />
                         </div>
-                        <p className="text-university-red font-medium">Failed to load programs</p>
-                        <p className="text-university-blue text-sm mt-1">Please try refreshing the page</p>
+                        <p className="text-university-red font-medium">
+                          Failed to load programs
+                        </p>
+                        <p className="text-university-blue text-sm mt-1">
+                          Please try refreshing the page
+                        </p>
                       </div>
                     </td>
                   </tr>
@@ -295,31 +354,52 @@ export default function AdminProgramsPage() {
                         <div className="h-12 w-12 bg-university-blue-light rounded-lg flex items-center justify-center">
                           <BookOpenIcon className="h-6 w-6 text-university-blue" />
                         </div>
-                        <p className="text-university-blue font-medium">No programs found</p>
+                        <p className="text-university-blue font-medium">
+                          No programs found
+                        </p>
                         <p className="text-gray-400 text-sm mt-1">
-                          {search || typeFilter ? 'Try adjusting your filters' : 'Get started by adding your first program'}
+                          {search || typeFilter
+                            ? "Try adjusting your filters"
+                            : "Get started by adding your first program"}
                         </p>
                       </div>
                     </td>
                   </tr>
                 )}
                 {filtered.map((p) => (
-                  <tr key={p.program_id} className="hover:bg-university-blue-light/20 transition-colors">
+                  <tr
+                    key={p.program_id}
+                    className="hover:bg-university-blue-light/20 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className={`h-10 w-10 rounded-lg flex items-center justify-center mr-3 ${getTypeColor(p.program_type)}`}>
+                        <div
+                          className={`h-10 w-10 rounded-lg flex items-center justify-center mr-3 ${getTypeColor(
+                            p.program_type
+                          )}`}
+                        >
                           {getTypeIcon(p.program_type)}
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-university-red">{p.program_name}</div>
-                          <div className="text-xs text-university-blue">Academic Program</div>
+                          <div className="text-sm font-semibold text-university-red">
+                            {p.program_name}
+                          </div>
+                          <div className="text-xs text-university-blue">
+                            Academic Program
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(p.program_type)}`}>
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(
+                          p.program_type
+                        )}`}
+                      >
                         {getTypeIcon(p.program_type)}
-                        <span className="ml-1.5 capitalize">{p.program_type.replace("_", " ")}</span>
+                        <span className="ml-1.5 capitalize">
+                          {p.program_type.replace("_", " ")}
+                        </span>
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -367,7 +447,9 @@ export default function AdminProgramsPage() {
       <ConfirmModal
         isOpen={confirmOpen}
         title="Delete Program"
-        message={`Delete program "${toDelete?.program_name ?? ""}"? This cannot be undone.`}
+        message={`Delete program "${
+          toDelete?.program_name ?? ""
+        }"? This cannot be undone.`}
         confirmText="Delete"
         cancelText="Cancel"
         onConfirm={confirmDelete}

@@ -185,7 +185,7 @@ const payableAmount = Math.round(totalAmount * (percent / 100));
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900">
       {/* Header */}
-      <Header currentPage="payment" showThemeToggle={true} />
+      <Header currentPage="payment" />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

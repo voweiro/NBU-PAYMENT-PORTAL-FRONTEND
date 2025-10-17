@@ -131,7 +131,7 @@ export default function PaymentLookupPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900">
       {/* Header */}
-      <Header currentPage="lookup" showThemeToggle={true} />
+      <Header currentPage="lookup" />
       {/* Auto-lookup when opened from QR: wrapped in Suspense per Next.js guidance */}
       <Suspense>
         <QRAutoLookup performLookup={performLookup} setReference={setReference} />
