@@ -57,7 +57,7 @@ export default function AdminHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-gray-500 shadow-lg">
+    <header className="sticky top-0 z-30 bg-[#ffede6] backdrop-blur-md border-b-2 border-gray-500 shadow-lg">
       <div className="flex items-center justify-between px-6 py-4">
         {/* Left Section */}
         <div className="flex items-center space-x-4">
